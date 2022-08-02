@@ -1,13 +1,12 @@
 class PrintEditionItem {
 
     set state(currentState) {
+        this._state = currentState;
         if (currentState < 0) {
             this._state = 0;
         } if (currentState > 100) {
             this._state = 100;
         }
-        this._state = currentState;
-
     }
     get state() {
         return this._state;
@@ -21,9 +20,7 @@ class PrintEditionItem {
     }
 
     fix() {
-        this._state = this._state * 1.5
-        if (this._state > 100)
-            this._state = 100;
+        this.state *= 1.5;
     }
 }
 
@@ -85,16 +82,14 @@ class Library {
     }
 
     giveBookByName(bookName) {
-        debugger;
         let deleted = null;
         for (let i = 0; i < this.books.length; i++) {
             if (this.books[i].name == bookName) {
                 deleted = this.books[i];
                 this.books.splice(i, 1);
             }
-            return deleted;
-        }
-        return null;
 
+        }
+        return deleted;
     }
 }
