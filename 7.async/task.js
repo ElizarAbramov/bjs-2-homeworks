@@ -1,4 +1,3 @@
-
 class AlarmClock {
     constructor() {
         this.alarmCollection = [];
@@ -42,41 +41,25 @@ class AlarmClock {
 
     getCurrentFormattedTime() {
         let d = new Date();
-        let h = d.getHours();
-        let m = d.getMinutes();
 
-        if (m < 10) {
-            m = "0" + m;
-        }
-        return h + ":" + m;
+        return (("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2));
     }
 
     start() {
-        debugger;   
-        function checkClock(time,callback,id) {
-
-          
-            if (time == AlarmClock.getCurrentFormattedTime) {
-                callback();
+        function checkClock(clock) {
+            if (clock.time === this.getCurrentFormattedTime()) {
+                clock.callback();
             }
-
-         if (this.timerId == null) {
-            this.timerId = setInterval(() => {for(element of this.alarmCollection){checkClock}});
-        
         }
-    
+
+        if (this.timerId == null) {
+            this.timerId = setInterval(() => { for (let element of this.alarmCollection) { checkClock.call(this, element) } });
+
+        }
+
     }
-    
-        }
-       
-    
-        
-        
-
-    
 
     stop() {
-        
 
         if (Number.isInteger(this.timerId)) {
             clearInterval();
@@ -84,56 +67,67 @@ class AlarmClock {
         }
     }
 
-    printAlarms(){
-        this.alarmCollection.forEach(element => {console.log("Будильник номер " +  element.id  + " заведен на " +  element.time) })
-            
-      
+    printAlarms() {
+        console.log("Печать всех будильников в количестве: " + this.alarmCollection.length)
+        this.alarmCollection.forEach(element => { console.log("Будильник номер " + element.id + " заведен на " + element.time) })
+
+
     }
 
-    clearAlarms(){
+    clearAlarms() {
         this.stop()
-        this.alarmCollection.length = 0;  
+        this.alarmCollection.length = 0;
     }
 
-    
 }
 
 function testCase() {
-    debugger;
-        let phoneAlarm = new AlarmClock();
-        phoneAlarm.addClock(phoneAlarm.getCurrentFormattedTime(), () => console.log("Пора вставать!"), 1);
-        phoneAlarm.addClock(getAnotherCurrentFormattedTime(), () => { console.log("Давай,вставай уже!"); phoneAlarm.removeClock(2) }, 2);
-    
-        phoneAlarm.addClock(getOneMoreCurrentFormattedTime(), () => { console.log("Вставай уже, а то проспишь!"); phoneAlarm.clearAlarms(); phoneAlarm.printAlarms() }, 3);
-    
-        phoneAlarm.printAlarms();
-    
-        phoneAlarm.start();
-    
-    
-    
-        function getAnotherCurrentFormattedTime() {
-            let d = new Date();
-            let h = d.getHours();
-            let m = (d.getMinutes() + 1);
-    
-            if (m < 10) {
-                m = "0" + m;
-            }
-            return h + ":" + m;
-        }
-    
-        function getOneMoreCurrentFormattedTime() {
-            let d = new Date();
-            let h = d.getHours();
-            let m = (d.getMinutes() + 2);
-    
-            if (m < 10) {
-                m = "0" + m;
-            }
-            return h + ":" + m;
-        }
-    
-        
-    }
 
+    let phoneAlarm = new AlarmClock();
+    let d = new Date();
+    let h = d.getHours();
+    let m = d.getMinutes();
+
+    let time = () => {
+        if (m == 60) {
+
+            m = 0;
+            h++;
+            if (h == 24) {
+                h = 0;
+            }
+        } return (("0" + h).slice(-2) + ":" + ("0" + m).slice(-2));
+    }
+   
+    phoneAlarm.addClock(time(), () => console.log("Пора вставать!"), 1);
+    
+    time = (() => {
+        let x = 1; if ((m + x) > 59) {
+            x = x - (x - 1);
+            m = 0;
+            h++;
+            if (h == 24) {
+                h = 0;
+            }
+        } return (("0" + h).slice(-2) + ":" + ("0" + (m + x)).slice(-2))
+    });
+   
+    phoneAlarm.addClock(time(), () => { console.log("Вставай уже!"); phoneAlarm.removeClock(2) }, 2);
+   
+    time = (() => {
+        let x = 2; if ((m + x) > 59) {
+            x = x - (x - 1);
+            m = 0;
+            h++;
+            if (h == 24) {
+                h = 0;
+            }
+        } return (("0" + h).slice(-2) + ":" + ("0" + (m + x)).slice(-2))
+    });
+   
+    phoneAlarm.addClock(time(), () => { console.log("Вставай уже, а то проспишь!"); phoneAlarm.clearAlarms(); phoneAlarm.printAlarms() }, 3);
+
+    phoneAlarm.printAlarms();
+
+    phoneAlarm.start();
+}
