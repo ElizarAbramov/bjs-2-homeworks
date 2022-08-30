@@ -61,10 +61,11 @@ class AlarmClock {
 
     stop() {
 
-        if (Number.isInteger(this.timerId)) {
-            clearInterval();
+        if (this.timerId != null){
+         clearInterval();
             this.timerId = null;
         }
+
     }
 
     printAlarms() {
